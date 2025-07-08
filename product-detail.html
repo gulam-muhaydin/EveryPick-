@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details | Every Pick</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    .product-detail-section {
+      max-width: 1100px;
+      margin: 48px auto 0 auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 40px 32px 32px 32px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 38px 48px;
+      box-shadow: 0 2px 24px #0002;
+    }
+    .product-detail-images {
+      flex: 1 1 340px;
+      min-width: 270px;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      align-items: center;
+    }
+    .product-detail-main-img {
+      width: 100%;
+      max-width: 340px;
+      border-radius: 14px;
+      box-shadow: 0 2px 10px #0001;
+      object-fit: cover;
+      background: #f5f5f5;
+      aspect-ratio: 1/1;
+    }
+    .product-detail-thumbs {
+      display: flex;
+      gap: 10px;
+    }
+    .product-detail-thumb {
+      width: 54px;
+      height: 54px;
+      border-radius: 8px;
+      object-fit: cover;
+      cursor: pointer;
+      border: 2px solid #eee;
+      transition: border 0.2s;
+      background: #fafbfc;
+    }
+    .product-detail-thumb.selected {
+      border: 2px solid #007bff;
+    }
+    .product-detail-info {
+      flex: 2 1 400px;
+      min-width: 260px;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+    .product-detail-title {
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 10px;
+    }
+    .product-detail-price {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #007bff;
+      margin-bottom: 8px;
+    }
+    .product-detail-desc {
+      color: #444;
+      font-size: 1.13rem;
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+    .product-detail-meta {
+      color: #555;
+      font-size: 1.01rem;
+      margin-bottom: 8px;
+    }
+    .product-detail-actions {
+      display: flex;
+      gap: 18px;
+      margin-top: 18px;
+    }
+    .product-detail-actions button {
+      background: linear-gradient(90deg,#007bff 60%,#00c6ff 100%);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 14px 30px;
+      font-size: 1.12rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #007bff22;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .product-detail-actions button:hover {
+      background: #0056b3;
+    }
+    @media (max-width: 900px) {
+      .product-detail-section {
+        flex-direction: column;
+        gap: 32px 0;
+        padding: 24px 6px 16px 6px;
+      }
+      .product-detail-images, .product-detail-info {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-logo"><img class="navbar-logo" src="./Every.jpg" alt="Error"></div>
+        <div class="navbar-links-container">
+          <button class="navbar-close" aria-label="Close Menu">
+            <!-- Close SVG Icon -->
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+          <ul class="navbar-links">
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="./category.html">Category</a></li>
+            <li><a href="./about.html">About</a></li>
+            <li><a href="./contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="navbar-account">
+          <button class="account-btn" aria-label="Account">
+            <!-- Account SVG Icon -->
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a8.38 8.38 0 0 1 13 0"/></svg>
+          </button>
+          <div class="account-dropdown"></div>
+        </div>
+        <button class="navbar-hamburger" aria-label="Menu">
+          <!-- Hamburger SVG Icon -->
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+        </button>
+      </nav>
+
+  <div class="product-detail-section">
+    <div class="product-detail-images">
+      <img src="./series 9.jpg" alt="Product Main" class="product-detail-main-img" id="mainProductImg">
+      <div class="product-detail-thumbs">
+        <img src="./series 9.jpg" alt="Thumb 1" class="product-detail-thumb selected" onclick="setMainImg(this)">
+        <img src="./series 9.jpg" alt="Thumb 2" class="product-detail-thumb" onclick="setMainImg(this)">
+        <img src="./series 9.jpg" alt="Thumb 3" class="product-detail-thumb" onclick="setMainImg(this)">
+      </div>
+    </div>
+    <div class="product-detail-info">
+      <div class="product-detail-title" style="font-size:2.1rem;font-weight:700;">Apple logo Series 10 Watch</div>
+      <div class="product-detail-price" style="font-size:1.6rem;font-weight:600;color:#007bff;margin-bottom:8px;">Rs. 4,200</div>
+
+      <!-- Feature Icons Section -->
+      <div class="product-feature-icons" style="display:flex;flex-direction:column;align-items:flex-start;gap:18px;margin:22px 0 22px 0;">
+        <div style="display:flex;align-items:center;min-width:180px;">
+          <img src="7days.png" alt="7 Days Warranty" style="width:38px;height:38px;object-fit:contain;margin-right:14px;">
+          <span style="font-size:1.13rem;font-weight:600;color:#222;">7 Days Check warranty</span>
+        </div>
+        <div style="display:flex;align-items:center;min-width:180px;">
+          <img src="bestprice.png" alt="Best Price Guarantee" style="width:38px;height:38px;object-fit:contain;margin-right:14px;">
+          <span style="font-size:1.13rem;font-weight:600;color:#222;">Best Price Guarantee</span>
+        </div>
+        <div style="display:flex;align-items:center;min-width:180px;">
+          <img src="freecash.png" alt="Free Cash on Delivery" style="width:38px;height:38px;object-fit:contain;margin-right:14px;">
+          <span style="font-size:1.13rem;font-weight:600;color:#222;">Free Cash on Delivery</span>
+        </div>
+      </div>
+
+      <div class="product-detail-meta" style="color:#555;font-size:1.01rem;margin-bottom:8px;">Brand: Apple | In Stock</div>
+
+      <ul style="margin:0 0 18px 0;padding-left:18px;font-size:1.08rem;line-height:1.7;color:#444;list-style:disc;">
+        <li>High Quality Curved Display</li>
+        <li>Apple logo Animation</li>
+        <li>Long Life Battery time</li>
+        <li>Stainless steel Frame</li>
+        <li>Same Packing Like Original Apple Watch</li>
+      </ul>
+
+      <div class="quantity-section" style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+        <label for="quantity-input" style="font-size:1.09rem;font-weight:600;color:#222;margin-right:8px;">Quantity</label>
+        <button id="qty-minus" type="button" style="width:32px;height:32px;font-size:1.2rem;font-weight:700;background:#f1f3f7;border:none;border-radius:6px;color:#007bff;cursor:pointer;">-</button>
+        <input id="quantity-input" type="number" min="1" value="1" style="width:52px;text-align:center;font-size:1.08rem;padding:6px 0;border-radius:6px;border:1.2px solid #ccc;outline:none;" />
+        <button id="qty-plus" type="button" style="width:32px;height:32px;font-size:1.2rem;font-weight:700;background:#f1f3f7;border:none;border-radius:6px;color:#007bff;cursor:pointer;">+</button>
+      </div>
+
+      <div class="product-detail-actions" style="display:flex;gap:18px;margin-top:0;margin-bottom:18px;">
+        <button id="buy-now-btn" style="background:#fff; color:#007bff; border:1.5px solid #007bff; box-shadow:none; border-radius:7px; padding:14px 30px; font-size:1.12rem; font-weight:700; cursor:pointer;">Buy Now</button>
+      </div>
+      <script>
+
+        const qtyMinus = document.getElementById('qty-minus');
+        const qtyPlus = document.getElementById('qty-plus');
+        const qtyInput = document.getElementById('quantity-input');
+        qtyMinus.addEventListener('click', function() {
+          let val = parseInt(qtyInput.value, 10) || 1;
+          if (val > 1) qtyInput.value = val - 1;
+        });
+        qtyPlus.addEventListener('click', function() {
+          let val = parseInt(qtyInput.value, 10) || 1;
+          qtyInput.value = val + 1;
+        });
+        qtyInput.addEventListener('input', function() {
+          let val = parseInt(qtyInput.value, 10);
+          if (isNaN(val) || val < 1) qtyInput.value = 1;
+        });
+        document.getElementById('buy-now-btn').addEventListener('click', function() {
+          const selectedQty = parseInt(qtyInput.value, 10) || 1;
+          // Add product to cart array in localStorage
+          const img = document.getElementById('mainProductImg')?.src || 'series10.jpg';
+          const name = document.querySelector('.product-detail-title')?.textContent.trim() || 'Apple logo Series 10 Watch';
+          const price = document.querySelector('.product-detail-price')?.textContent.trim() || 'Rs. 5,200.00';
+          let cart = JSON.parse(localStorage.getItem('cart')) || [];
+          cart.push({ img, name, price, qty: selectedQty });
+          localStorage.setItem('cart', JSON.stringify(cart));
+          window.location.href = 'buy-now.html';
+        });
+      </script>
+      <div class="product-detail-desc" style="margin-bottom:18px;">
+        Experience the pinnacle of sophistication and innovation with our replica of the Apple Watch Apple logo Series 10 Watch. Crafted with meticulous attention to detail, this high-quality smartwatch boasts a sleek stainless steel frame adorned with the iconic Apple logo, exuding luxury and style.<br><br>
+        <b>Stunning Retina Display:</b> Immerse yourself in crystal-clear visuals and vibrant colors on the stunning Retina display.<br>
+        <b>Seamless Connectivity:</b> Stay in sync with your digital life with seamless integration with your iPhone.<br>
+        <b>Powerful Performance:</b> Powered by the latest technology for swift and responsive performance.<br><br>
+        Indulge in the ultimate smartwatch experience without compromising on quality or style. Elevate your everyday with our meticulously crafted replica Apple Watch Apple logo Series 10 Watch.
+      </div>
+
+
+
+
+  </div>
+
+  <script>
+    function setMainImg(thumb) {
+      const main = document.getElementById('mainProductImg');
+      main.src = thumb.src;
+      document.querySelectorAll('.product-detail-thumb').forEach(t => t.classList.remove('selected'));
+      thumb.classList.add('selected');
+    }
+
+  </script>
+
+<script src="auth.js"></script>
+<script src="navbar.js"></script>
+  <script src="hero-slider.js"></script>
+  <script src="category-carousel.js"></script>
+  
+</body>
+</html>

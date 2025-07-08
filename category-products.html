@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Navbar</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="product-card-demo.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-logo"><img class="navbar-logo" src="./Every.jpg" alt="Error"></div>
+    <div class="navbar-links-container">
+      <button class="navbar-close" aria-label="Close Menu">
+        <!-- Close SVG Icon -->
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <ul class="navbar-links">
+        <li><a href="./index.html">Home</a></li>
+        <li><a href="./category.html">Category</a></li>
+        <li><a href="./about.html">About</a></li>
+        <li><a href="./contact.html">Contact</a></li>
+      </ul>
+    </div>
+    <div class="navbar-account">
+      <button class="account-btn" aria-label="Account">
+        <!-- Account SVG Icon -->
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a8.38 8.38 0 0 1 13 0"/></svg>
+      </button>
+      <div class="account-dropdown"></div>
+    </div>
+    <button class="navbar-hamburger" aria-label="Menu">
+      <!-- Hamburger SVG Icon -->
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
+  </nav>
+
+
+<!-- Product Card Demo Start -->
+
+<div class="product-card-row" style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
+  <div class="product-card" data-category="smartwatch" data-brand="apple" data-price="5200">
+    <div class="product-image-container">
+      <img src="./series 9.jpg" alt="Apple logo Series 10 Watch" class="product-image">
+      <a href="./product-detail.html" class="eye-icon" aria-label="View details">
+        <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path stroke="#111" stroke-width="2" d="M1.5 12S5 5.5 12 5.5 22.5 12 22.5 12 19 18.5 12 18.5 1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3.5" stroke="#111" stroke-width="2"/></svg>
+      </a>
+    </div>
+    <div class="product-details">
+      <div class="product-title">Apple logo Series 10 Watch</div>
+      <div class="product-prices">
+        <span class="product-price-new">Rs.5,200.00</span>
+        <span class="product-price-old">Rs.15,000.00</span>
+      </div>
+    </div>
+  </div>
+  <div class="product-card" data-category="fitness" data-brand="samsung" data-price="11800">
+    <div class="product-image-container">
+      <img src="./series 9.jpg" alt="Samsung Galaxy Fit 3" class="product-image">
+      <a href="./product-detail2.html" class="eye-icon" aria-label="View details">
+        <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path stroke="#111" stroke-width="2" d="M1.5 12S5 5.5 12 5.5 22.5 12 22.5 12 19 18.5 12 18.5 1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3.5" stroke="#111" stroke-width="2"/></svg>
+      </a>
+    </div>
+    <div class="product-details">
+      <div class="product-title">Samsung Galaxy Fit 3</div>
+      <div class="product-prices">
+        <span class="product-price-new">Rs.11,800</span>
+        <span class="product-price-old">Rs.15,500</span>
+      </div>
+    </div>
+  </div>
+  <div class="product-card">
+    <div class="product-image-container">
+      <img src="./series 9.jpg" alt="Noise ColorFit Pro 4" class="product-image">
+      <a href="#" class="eye-icon" aria-label="View details">
+        <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path stroke="#111" stroke-width="2" d="M1.5 12S5 5.5 12 5.5 22.5 12 22.5 12 19 18.5 12 18.5 1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3.5" stroke="#111" stroke-width="2"/></svg>
+      </a>
+    </div>
+    <div class="product-details">
+      <div class="product-title">Noise ColorFit Pro 4</div>
+      <div class="product-prices">
+        <span class="product-price-new">Rs.3,499.00</span>
+        <span class="product-price-old">Rs.7,999.00</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-image-container">
+      <img src="./series 9.jpg" alt="Noise ColorFit Pro 4" class="product-image">
+      <a href="#" class="eye-icon" aria-label="View details">
+        <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path stroke="#111" stroke-width="2" d="M1.5 12S5 5.5 12 5.5 22.5 12 22.5 12 19 18.5 12 18.5 1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3.5" stroke="#111" stroke-width="2"/></svg>
+      </a>
+    </div>
+    <div class="product-details">
+      <div class="product-title">Noise ColorFit Pro 4</div>
+      <div class="product-prices">
+        <span class="product-price-new">Rs.3,499.00</span>
+        <span class="product-price-old">Rs.7,999.00</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-image-container">
+      <img src="./series 9.jpg" alt="Noise ColorFit Pro 4" class="product-image">
+      <a href="#" class="eye-icon" aria-label="View details">
+        <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path stroke="#111" stroke-width="2" d="M1.5 12S5 5.5 12 5.5 22.5 12 22.5 12 19 18.5 12 18.5 1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3.5" stroke="#111" stroke-width="2"/></svg>
+      </a>
+    </div>
+    <div class="product-details">
+      <div class="product-title">Noise ColorFit Pro 4</div>
+      <div class="product-prices">
+        <span class="product-price-new">Rs.3,499.00</span>
+        <span class="product-price-old">Rs.7,999.00</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-image-container">
+      <img src="./series 9.jpg" alt="Noise ColorFit Pro 4" class="product-image">
+      <a href="#" class="eye-icon" aria-label="View details">
+        <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path stroke="#111" stroke-width="2" d="M1.5 12S5 5.5 12 5.5 22.5 12 22.5 12 19 18.5 12 18.5 1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3.5" stroke="#111" stroke-width="2"/></svg>
+      </a>
+    </div>
+    <div class="product-details">
+      <div class="product-title">Noise ColorFit Pro 4</div>
+      <div class="product-prices">
+        <span class="product-price-new">Rs.3,499.00</span>
+        <span class="product-price-old">Rs.7,999.00</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <div class="product-image-container">
+      <img src="./series 9.jpg" alt="Noise ColorFit Pro 4" class="product-image">
+      <a href="#" class="eye-icon" aria-label="View details">
+        <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path stroke="#111" stroke-width="2" d="M1.5 12S5 5.5 12 5.5 22.5 12 22.5 12 19 18.5 12 18.5 1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3.5" stroke="#111" stroke-width="2"/></svg>
+      </a>
+    </div>
+    <div class="product-details">
+      <div class="product-title">Noise ColorFit Pro 4</div>
+      <div class="product-prices">
+        <span class="product-price-new">Rs.3,499.00</span>
+        <span class="product-price-old">Rs.7,999.00</span>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="product-card">
+    <div class="product-image-container">
+      <img src="./series 9.jpg" alt="Fire-Boltt Ninja Call Pro" class="product-image">
+      <a href="#" class="eye-icon" aria-label="View details">
+        <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path stroke="#111" stroke-width="2" d="M1.5 12S5 5.5 12 5.5 22.5 12 22.5 12 19 18.5 12 18.5 1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3.5" stroke="#111" stroke-width="2"/></svg>
+      </a>
+    </div>
+    <div class="product-details">
+      <div class="product-title">Fire-Boltt Ninja Call Pro</div>
+      <div class="product-prices">
+        <span class="product-price-new">Rs.2,999.00</span>
+        <span class="product-price-old">Rs.6,499.00</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<footer class="site-footer" style="background: #000; color: #fff; padding: 56px 32px 36px 32px;">
+  <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 64px; align-items: flex-start;"padding="30px">
+    <!-- Useful Links -->
+    <div style="flex: 1 1 210px; min-width: 180px;" >
+      <div style="font-weight: 600; margin-bottom: 18px; font-size: 1.05rem;">Useful Links</div>
+      <ul style="list-style: none; padding: 0; margin: 0; line-height: 2.1; font-size: 0.98rem;">
+        <li><a href="#" style="color: #fff; text-decoration: none; opacity: 0.9;">Contact Us</a></li>
+        <li><a href="#" style="color: #fff; text-decoration: none; opacity: 0.9;">Faqs</a></li>
+        <li><a href="#" style="color: #fff; text-decoration: none; opacity: 0.9;">Refund Policy</a></li>
+        <li><a href="#" style="color: #fff; text-decoration: none; opacity: 0.9;">Shipping Policy</a></li>
+        <li><a href="#" style="color: #fff; text-decoration: none; opacity: 0.9;">Terms Of Services</a></li>
+        <li><a href="#" style="color: #fff; text-decoration: none; opacity: 0.9;">Privacy Policy</a></li>
+      </ul>
+    </div>
+    <!-- Newsletter Signup -->
+    <div style="flex: 2 1 420px; min-width: 320px; max-width: 520px;">
+      <div style="font-weight: 600; margin-bottom: 14px; font-size: 1.05rem;">Let's get in touch</div>
+      <div style="margin-bottom: 16px; font-size: 0.98rem; opacity: 0.95;">Sign up for our newsletter and receive 10% off your</div>
+      <form style="display: flex; align-items: center; width: 100%; max-width: 410px;">
+        <span style="background: #fff; color: #222; padding: 0 12px; height: 42px; border-radius: 4px 0 0 4px; display: flex; align-items: center; border: 1px solid #eee; border-right: none; font-size: 1.15rem;">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><rect width="24" height="24" fill="none"></rect><path d="M3 8.5V17a2 2 0 002 2h14a2 2 0 002-2V8.5M3 8.5L12 14l9-5.5M3 8.5l9-5.5 9 5.5" stroke="#111" stroke-width="1.5"></path></svg>
+        </span>
+        <input type="email" placeholder="Enter your email" required="" style="flex: 1 1 auto; height: 42px; border: 1px solid #eee; border-left: none; border-right: none; outline: none; font-size: 1rem; padding: 0 8px; border-radius: 0; min-width: 0;">
+        <button type="submit" style="height: 42px; background: #fff; border: 1px solid #eee; border-left: none; border-radius: 0 4px 4px 0; padding: 0 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s;">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24"><rect width="24" height="24" fill="none"></rect><path d="M5 12h14M13 6l6 6-6 6" stroke="#111" stroke-width="1.5"></path></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+</footer>
+
+<script src="auth.js"></script>
+<script src="navbar.js"></script>
+  <script src="hero-slider.js"></script>
+  <script src="category-carousel.js"></script>
+</body>
+</html>

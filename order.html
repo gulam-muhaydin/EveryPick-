@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Place Order</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h2 style="text-align:center; margin: 30px 0 20px;">Place Your Order</h2>
+  <form id="order-form" style="max-width: 400px; margin: 0 auto; background: #f8f8f8; padding: 24px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.04);">
+    <label for="customerName">Name:</label><br>
+    <input type="text" id="customerName" name="customerName" required style="width:100%;padding:8px;margin-bottom:12px;"><br>
+    <label for="items">Items (comma separated):</label><br>
+    <input type="text" id="items" name="items" required style="width:100%;padding:8px;margin-bottom:12px;">
+    <div id="product-readonly" style="display:none;padding:8px 0 12px 0;"></div>
+
+    <label for="total">Total Amount:</label><br>
+    <input type="number" id="total" name="total" required style="width:100%;padding:8px;margin-bottom:12px;">
+    <br>
+    <button type="submit" style="width:100%;padding:10px 0;background:#222;color:#fff;font-weight:600;border:none;border-radius:6px;font-size:1.1rem;">Submit Order</button>
+    <div id="order-success" style="color:green;margin-top:16px;display:none;">Order placed successfully!</div>
+    <div id="order-error" style="color:red;margin-top:16px;display:none;"></div>
+  </form>
+  <script src="order.js"></script>
+</body>
+</html>

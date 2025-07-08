@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buy Now | Every Pick</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { background: #f6f7fa; font-family: 'Roboto', Arial, sans-serif; }
+    .buy-now-container {
+      max-width: 500px;
+      margin: 48px auto 0 auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 24px #0002;
+      padding: 38px 28px 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .buy-now-header {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #007bff;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .product-summary {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 8px;
+    }
+    .product-summary img {
+      width: 90px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1.5px solid #e0e0e0;
+    }
+    .product-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .product-name {
+      font-size: 1.13rem;
+      font-weight: 600;
+      color: #222;
+    }
+    .product-price {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #007bff;
+    }
+    .total-section {
+      border-top: 1px solid #eee;
+      padding-top: 16px;
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .total-label {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #555;
+    }
+    .total-price {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #007bff;
+    }
+    .order-form label {
+      font-size: 1.09rem;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 6px;
+      display: block;
+    }
+    .order-form input, .order-form textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 7px;
+      border: 1.2px solid #bbb;
+      font-size: 1rem;
+      margin-bottom: 16px;
+      background: #f8fafc;
+      resize: none;
+    }
+    .order-form textarea { min-height: 60px; }
+    .place-order-btn {
+      width: 100%;
+      background: linear-gradient(90deg,#007bff 60%,#00c6ff 100%);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 14px 0;
+      font-size: 1.15rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #007bff22;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .place-order-btn:hover { background: #0056b3; }
+    .order-success {
+      color: #28a745;
+      font-weight: 700;
+      text-align: center;
+      margin-top: 18px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="buy-now-container">
+    <div class="buy-now-header">Buy Now</div>
+    <div class="product-summary">
+      <img id="product-img" src="" alt="Product Image">
+      <div class="product-info">
+        <div class="product-name" id="product-name"></div>
+        <div class="product-price" id="product-price"></div>
+        <div>Qty: <span id="product-qty"></span></div>
+        <div class="total-section">
+          <span class="total-label">Total:</span>
+          <span class="total-price" id="total-price"></span>
+        </div>
+      </div>
+    </div>
+    <form class="order-form" id="order-form">
+      <label for="customer-name">Name</label>
+      <input type="text" id="customer-name" name="customer-name" required>
+      <label for="customer-phone">Phone Number</label>
+      <input type="tel" id="customer-phone" name="customer-phone" pattern="[0-9]{10,15}" required>
+      <label for="customer-address">Address</label>
+      <textarea id="customer-address" name="customer-address" required></textarea>
+      <button type="submit" class="place-order-btn">Place Order</button>
+    </form>
+    <div class="order-success" id="order-success">Order placed successfully!</div>
+  </div>
+  <script>
+    // PKR Calculation Functions
+    function extractNumericPrice(priceStr) {
+      // Remove ALL non-digit characters and everything after decimal point
+      const numericString = priceStr.toString().replace(/[^\d]/g, '');
+      // Extract only the whole number part (before decimal)
+      const wholeNumber = numericString.replace(/(\d+)\.\d+/, '$1');
+      return parseInt(wholeNumber, 10) || 0;
+    }
+
+    function calculateTotalPKR(price, quantity) {
+      const numericPrice = extractNumericPrice(price);
+      const numericQuantity = parseInt(quantity) || 1;
+      return numericPrice * numericQuantity;
+    }
+
+    function formatAsPKR(amount) {
+      // Format with commas as thousand separators and no decimals
+      return 'Rs. ' + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    // Load product and calculate total
+    function loadProductAndCalculate() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const product = cart[cart.length - 1];
+      
+      if (!product) {
+        document.querySelector('.buy-now-container').innerHTML = 
+          '<div style="color:#e53935;text-align:center;font-weight:700;font-size:1.2rem;">No product selected for purchase.</div>';
+        return;
+      }
+
+      // Display product info exactly as stored
+      document.getElementById('product-img').src = product.img;
+      document.getElementById('product-name').textContent = product.name;
+      document.getElementById('product-price').textContent = product.price; // Shows original "Rs. 4,200.00"
+      
+      const quantity = parseInt(product.qty) || 1;
+      document.getElementById('product-qty').textContent = quantity;
+
+      // Calculate and display total (without decimal values)
+      const total = calculateTotalPKR(product.price, quantity);
+      document.getElementById('total-price').textContent = formatAsPKR(total); // Shows "Rs. 8,400"
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', loadProductAndCalculate);
+
+    // Handle form submission
+    document.getElementById('order-form')?.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const product = cart[cart.length - 1];
+      if (!product) return;
+      const customerName = document.getElementById('customer-name').value.trim();
+      const customerPhone = document.getElementById('customer-phone').value.trim();
+      const customerAddress = document.getElementById('customer-address').value.trim();
+      const quantity = parseInt(product.qty) || 1;
+      const total = calculateTotalPKR(product.price, quantity);
+      // Compose order object
+      const order = {
+        customerName,
+        customerPhone,
+        customerAddress,
+        items: [product.name],
+        total,
+        status: 'pending',
+        quantity
+      };
+      try {
+        const res = await fetch('http://localhost:3001/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(order)
+        });
+        if (res.ok) {
+          document.getElementById('order-success').style.display = 'block';
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 2000);
+        } else {
+          alert('Error placing order. Please try again.');
+        }
+      } catch (err) {
+        alert('Could not connect to server. Please try again.');
+      }
+    });
+</script>
+</body>
+</html>
