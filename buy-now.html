@@ -79,7 +79,7 @@
       margin-bottom: 6px;
       display: block;
     }
-    .order-form input, .order-form textarea {
+    .order-form input, .order-form textarea, .order-form select {
       width: 100%;
       padding: 10px;
       border-radius: 7px;
@@ -135,7 +135,11 @@
       <input type="tel" id="customer-phone" name="customer-phone" pattern="[0-9]{10,15}" required>
       <label for="customer-address">Address</label>
       <textarea id="customer-address" name="customer-address" required></textarea>
-      <button type="submit" class="place-order-btn">Place Order</button>
+      <label for="payment-method">Payment Method</label>
+<select id="payment-method" name="payment-method" required>
+  <option value="cod">Cash on Delivery (COD)</option>
+</select>
+<button type="submit" class="place-order-btn">Place Order</button>
     </form>
     <div class="order-success" id="order-success">Order placed successfully!</div>
   </div>
@@ -187,45 +191,50 @@
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', loadProductAndCalculate);
 
-    // Handle form submission
-    document.getElementById('order-form')?.addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      const product = cart[cart.length - 1];
-      if (!product) return;
-      const customerName = document.getElementById('customer-name').value.trim();
-      const customerPhone = document.getElementById('customer-phone').value.trim();
-      const customerAddress = document.getElementById('customer-address').value.trim();
-      const quantity = parseInt(product.qty) || 1;
-      const total = calculateTotalPKR(product.price, quantity);
-      // Compose order object
-      const order = {
-        customerName,
-        customerPhone,
-        customerAddress,
-        items: [product.name],
-        total,
-        status: 'pending',
-        quantity
-      };
-      try {
-        const res = await fetch('http://localhost:3001/api/orders', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(order)
-        });
-        if (res.ok) {
-          document.getElementById('order-success').style.display = 'block';
-          setTimeout(() => {
-            window.location.href = 'index.html';
-          }, 2000);
-        } else {
-          alert('Error placing order. Please try again.');
-        }
-      } catch (err) {
-        alert('Could not connect to server. Please try again.');
-      }
+    /// Handle form submission
+document.getElementById('order-form')?.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const product = cart[cart.length - 1];
+  if (!product) return;
+  const customerName = document.getElementById('customer-name').value.trim();
+  const customerPhone = document.getElementById('customer-phone').value.trim();
+  const customerAddress = document.getElementById('customer-address').value.trim();
+  const quantity = parseInt(product.qty) || 1;
+  const total = calculateTotalPKR(product.price, quantity);
+  const paymentMethod = document.getElementById('payment-method').value;
+  const order = {
+    customerName,
+    customerPhone,
+    customerAddress,
+    items: [product.name],
+    total,
+    status: 'pending',
+    quantity,
+    paymentMethod
+  };
+
+  // Replace with your Google Apps Script Web App URL
+  const GOOGLE_SHEET_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycby3IkKCeXWUBxX6LpSUqbHmNzxix8N2nryxYb9LqQBQ2m2jUQS8BilCNuN_Xwe6-V13/exec';
+
+  try {
+    const res = await fetch(GOOGLE_SHEET_WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(order)
     });
+    if (res.ok) {
+      document.getElementById('order-success').style.display = 'block';
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 2000);
+    } else {
+      alert('Error placing order. Please try again.');
+    }
+  } catch (err) {
+    alert('Could not connect to server. Please try again.');
+  }
+});
 </script>
 </body>
 </html>
