@@ -214,16 +214,33 @@ document.getElementById('order-form')?.addEventListener('submit', async function
     paymentMethod
   };
 
-  // Replace with your Google Apps Script Web App URL
-  const GOOGLE_SHEET_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycby3IkKCeXWUBxX6LpSUqbHmNzxix8N2nryxYb9LqQBQ2m2jUQS8BilCNuN_Xwe6-V13/exec';
-
   try {
-    const res = await fetch(GOOGLE_SHEET_WEBAPP_URL, {
+    // Send order to backend
+    const res = await fetch('http://localhost:3000/api/order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(order)
+      body: JSON.stringify({
+        productId: product.id || '',
+        name: product.name,
+        price: extractNumericPrice(product.price),
+        quantity,
+        customerName,
+        address: customerAddress
+      })
     });
     if (res.ok) {
+      // Save order locally for My Orders
+      const myOrders = JSON.parse(localStorage.getItem('myOrders')) || [];
+      myOrders.push({
+        productId: product.id || '',
+        name: product.name,
+        price: extractNumericPrice(product.price),
+        quantity,
+        customerName,
+        address: customerAddress,
+        date: new Date().toISOString()
+      });
+      localStorage.setItem('myOrders', JSON.stringify(myOrders));
       document.getElementById('order-success').style.display = 'block';
       setTimeout(() => {
         window.location.href = 'index.html';
