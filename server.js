@@ -1,4 +1,4 @@
-// server.js
+// server.js - Updated for everypick.online
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
@@ -6,112 +6,136 @@ const path = require('path');
 const cors = require('cors');
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 const ORDERS_FILE = path.join(__dirname, 'orders.json');
 
-app.use(cors());
-app.use(bodyParser.json());
+// Configured for everypick.online with mobile support
+const allowedOrigins = [
+  'https://everypick.online',
+  'https://www.everypick.online',
+  'http://localhost:3000',
+  'https://everypick.vercel.app' // If using Vercel
+];
 
-// Helper to read orders
-function readOrders() {
-    if (!fs.existsSync(ORDERS_FILE)) return [];
-    const data = fs.readFileSync(ORDERS_FILE, 'utf-8');
-    try {
-        return JSON.parse(data);
-    } catch {
-        return [];
+// Enhanced CORS configuration
+app.use(cors({
+  origin: function(origin, callback) {
+    // Allow mobile apps or direct API calls
+    if (!origin && process.env.NODE_ENV !== 'production') {
+      return callback(null, true);
     }
-}
+    
+    // Production - strict origin checking
+    if (process.env.NODE_ENV === 'production' && origin && !allowedOrigins.includes(origin)) {
+      console.warn('Blocked CORS request from:', origin);
+      return callback(new Error('Not allowed by CORS'), false);
+    }
+    return callback(null, true);
+  },
+  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  credentials: true,
+  optionsSuccessStatus: 204
+}));
 
-// Helper to write orders
-function writeOrders(orders) {
-    fs.writeFileSync(ORDERS_FILE, JSON.stringify(orders, null, 2));
-}
+// Mobile-specific middleware
+app.use((req, res, next) => {
+  // Identify mobile devices
+  req.isMobile = /mobile|android|iphone|ipad|phone/i.test(req.headers['user-agent'] || false);
+  
+  // Set headers for Worker App compatibility
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('X-Device-Type', req.isMobile ? 'mobile' : 'desktop');
+  next();
+});
 
-// Endpoint to receive new orders
+// Increased timeout for mobile networks
+app.use((req, res, next) => {
+  req.setTimeout(req.isMobile ? 20000 : 10000, () => {
+    console.log(`Timeout from ${req.isMobile ? 'mobile' : 'desktop'}:`, req.url);
+  });
+  next();
+});
+
+app.use(bodyParser.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: true }));
+
+// Order processing with mobile logging
 app.post('/api/orders', (req, res) => {
-    const order = req.body;
-    if (!order.name || !order.address || !order.phone || !order.paymentMethod) {
-        return res.status(400).json({ error: 'Missing required fields' });
+  const clientInfo = {
+    device: req.isMobile ? 'mobile' : 'desktop',
+    userAgent: req.headers['user-agent'],
+    ip: req.ip || req.connection.remoteAddress
+  };
+
+  console.log('New order attempt from:', clientInfo);
+
+  try {
+    const requiredFields = ['name', 'address', 'phone', 'paymentMethod'];
+    const missingFields = requiredFields.filter(field => !req.body[field]);
+    
+    if (missingFields.length > 0) {
+      console.warn('Missing fields:', missingFields, 'from', clientInfo);
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields',
+        missing: missingFields,
+        device: clientInfo.device
+      });
     }
+
     const orders = readOrders();
-    order.id = Date.now();
-    order.status = 'pending';
-    order.createdAt = new Date().toISOString();
-    orders.push(order);
+    const newOrder = {
+      ...req.body,
+      id: Date.now(),
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+      device: clientInfo.device,
+      ipAddress: clientInfo.ip
+    };
+
+    orders.push(newOrder);
     writeOrders(orders);
-    res.json({ success: true, order });
-});
-
-// Endpoint to get all orders
-app.get('/api/orders', (req, res) => {
-    const orders = readOrders();
-    // Ensure all fields are present for admin.js
-    const formatted = orders.map(order => ({
-        id: order.id,
-        name: order.name,
-        phone: order.phone,
-        address: order.address,
-        productName: order.productName,
-        quantity: order.quantity,
-        total: order.total,
-        paymentMethod: order.paymentMethod,
-        status: order.status || 'pending',
-        createdAt: order.createdAt || null
-    }));
-    res.json(formatted);
-});
-
-// PATCH endpoint to update order status
-app.patch('/api/orders/:id', (req, res) => {
-    const { id } = req.params;
-    const { status } = req.body;
-    let orders = readOrders();
-    let found = false;
-    orders = orders.map(order => {
-        if (order.id == id) {
-            found = true;
-            return { ...order, status };
-        }
-        return order;
+    
+    console.log('Order successfully placed:', { id: newOrder.id, device: clientInfo.device });
+    res.json({ success: true, orderId: newOrder.id });
+    
+  } catch (error) {
+    console.error('Order processing failed:', error, clientInfo);
+    res.status(500).json({
+      success: false,
+      error: 'Order processing failed',
+      device: clientInfo.device,
+      message: error.message
     });
-    if (!found) return res.status(404).json({ error: 'Order not found' });
-    writeOrders(orders);
-    res.json({ success: true });
+  }
 });
 
-// DELETE endpoint to delete an order by id
-app.delete('/api/orders/:id', (req, res) => {
-    const { id } = req.params;
-    let orders = readOrders();
-    const initialLength = orders.length;
-    orders = orders.filter(order => order.id != id);
-    if (orders.length === initialLength) {
-        return res.status(404).json({ error: 'Order not found' });
-    }
-    writeOrders(orders);
-    res.json({ success: true });
-});
+// [Keep all your other existing endpoints...]
 
-// Endpoint to get order stats (today, week, month)
-app.get('/api/orders/stats', (req, res) => {
-    const orders = readOrders();
-    const now = new Date();
-    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay()); // Sunday as start
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+// Enhanced error handling
+app.use((err, req, res, next) => {
+  const errorInfo = {
+    timestamp: new Date().toISOString(),
+    device: req.isMobile ? 'mobile' : 'desktop',
+    url: req.originalUrl,
+    error: err.message,
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+  };
 
-    let today = 0, week = 0, month = 0;
-    for (const order of orders) {
-        const created = order.createdAt ? new Date(order.createdAt) : null;
-        if (!created) continue;
-        if (created >= startOfToday) today++;
-        if (created >= startOfWeek) week++;
-        if (created >= startOfMonth) month++;
-    }
-    res.json({ today, week, month });
+  console.error('Server Error:', errorInfo);
+  
+  res.status(500).json({
+    error: 'Internal server error',
+    device: errorInfo.device,
+    timestamp: errorInfo.timestamp
+  });
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
+  console.log('Allowed origins:', allowedOrigins);
 });
+
+// [Keep your existing helper functions readOrders() and writeOrders()]

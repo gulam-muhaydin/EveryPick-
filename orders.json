@@ -70,5 +70,17 @@
     "id": 1752117569917,
     "status": "pending",
     "createdAt": "2025-07-10T03:19:29.917Z"
+  },
+  {
+    "name": "Gulam Muhaydin",
+    "phone": "03017677317",
+    "address": "khan town",
+    "productName": "Apple logo Series 10 Watch",
+    "quantity": 1,
+    "total": 4200,
+    "paymentMethod": "Cash on Delivery",
+    "id": 1752118617654,
+    "status": "pending",
+    "createdAt": "2025-07-10T03:36:57.654Z"
   }
 ]
