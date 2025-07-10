@@ -1,7 +1,0 @@
-node_modules/
-orders.json
-*.log
-.env
-.DS_Store
-*.sqlite
-*.db
