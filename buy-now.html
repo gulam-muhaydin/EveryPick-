@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Buy Now | Every Pick</title>
-  <link rel="stylesheet" href="styles.css">
   <style>
-    body { background: #f6f7fa; font-family: 'Roboto', Arial, sans-serif; }
+    body {
+      background: #f6f7fa;
+      font-family: 'Roboto', Arial, sans-serif;
+    }
     .buy-now-container {
       max-width: 500px;
-      margin: 48px auto 0 auto;
+      margin: 48px auto;
       background: #fff;
       border-radius: 16px;
       box-shadow: 0 2px 24px #0002;
@@ -130,27 +132,24 @@
     </div>
     <form class="order-form" id="order-form">
       <label for="customer-name">Name</label>
-      <input type="text" id="customer-name" name="customer-name" required>
+      <input type="text" id="customer-name" required />
       <label for="customer-phone">Phone Number</label>
-      <input type="tel" id="customer-phone" name="customer-phone" pattern="[0-9]{10,15}" required>
+      <input type="tel" id="customer-phone" pattern="[0-9]{10,15}" required />
       <label for="customer-address">Address</label>
-      <textarea id="customer-address" name="customer-address" required></textarea>
+      <textarea id="customer-address" required></textarea>
       <label for="payment-method">Payment Method</label>
-<select id="payment-method" name="payment-method" required>
-  <option value="cod">Cash on Delivery (COD)</option>
-</select>
-<button type="submit" class="place-order-btn">Place Order</button>
+      <select id="payment-method" required>
+        <option value="Cash on Delivery">Cash on Delivery (COD)</option>
+      </select>
+      <button type="submit" class="place-order-btn">Place Order</button>
     </form>
     <div class="order-success" id="order-success">Order placed successfully!</div>
   </div>
+
   <script>
-    // PKR Calculation Functions
     function extractNumericPrice(priceStr) {
-      // Remove ALL non-digit characters and everything after decimal point
       const numericString = priceStr.toString().replace(/[^\d]/g, '');
-      // Extract only the whole number part (before decimal)
-      const wholeNumber = numericString.replace(/(\d+)\.\d+/, '$1');
-      return parseInt(wholeNumber, 10) || 0;
+      return parseInt(numericString, 10) || 0;
     }
 
     function calculateTotalPKR(price, quantity) {
@@ -160,98 +159,67 @@
     }
 
     function formatAsPKR(amount) {
-      // Format with commas as thousand separators and no decimals
       return 'Rs. ' + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
-    // Load product and calculate total
     function loadProductAndCalculate() {
       const cart = JSON.parse(localStorage.getItem('cart')) || [];
       const product = cart[cart.length - 1];
-      
       if (!product) {
-        document.querySelector('.buy-now-container').innerHTML = 
+        document.querySelector('.buy-now-container').innerHTML =
           '<div style="color:#e53935;text-align:center;font-weight:700;font-size:1.2rem;">No product selected for purchase.</div>';
         return;
       }
-
-      // Display product info exactly as stored
       document.getElementById('product-img').src = product.img;
       document.getElementById('product-name').textContent = product.name;
-      document.getElementById('product-price').textContent = product.price; // Shows original "Rs. 4,200.00"
-      
+      document.getElementById('product-price').textContent = product.price;
       const quantity = parseInt(product.qty) || 1;
       document.getElementById('product-qty').textContent = quantity;
-
-      // Calculate and display total (without decimal values)
       const total = calculateTotalPKR(product.price, quantity);
-      document.getElementById('total-price').textContent = formatAsPKR(total); // Shows "Rs. 8,400"
+      document.getElementById('total-price').textContent = formatAsPKR(total);
     }
 
-    // Initialize on page load
     document.addEventListener('DOMContentLoaded', loadProductAndCalculate);
 
-    /// Handle form submission
-document.getElementById('order-form')?.addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
-  const product = cart[cart.length - 1];
-  if (!product) return;
-  const customerName = document.getElementById('customer-name').value.trim();
-  const customerPhone = document.getElementById('customer-phone').value.trim();
-  const customerAddress = document.getElementById('customer-address').value.trim();
-  const quantity = parseInt(product.qty) || 1;
-  const total = calculateTotalPKR(product.price, quantity);
-  const paymentMethod = document.getElementById('payment-method').value;
-  const order = {
-    customerName,
-    customerPhone,
-    customerAddress,
-    items: [product.name],
-    total,
-    status: 'pending',
-    quantity,
-    paymentMethod
-  };
+    document.getElementById('order-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const product = cart[cart.length - 1];
+      if (!product) return;
 
-  try {
-    // Send order to backend
-    const res = await fetch('http://localhost:3000/api/order', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        productId: product.id || '',
-        name: product.name,
-        price: extractNumericPrice(product.price),
-        quantity,
-        customerName,
-        address: customerAddress
-      })
+      const customerName = document.getElementById('customer-name').value.trim();
+      const customerPhone = document.getElementById('customer-phone').value.trim();
+      const customerAddress = document.getElementById('customer-address').value.trim();
+      const quantity = parseInt(product.qty) || 1;
+      const total = calculateTotalPKR(product.price, quantity);
+      const paymentMethod = document.getElementById('payment-method').value;
+
+      try {
+        const res = await fetch('https://script.google.com/macros/s/AKfycbzHKKb28vQ-0Zu1oFnjgV-wAFMrfyKabQUVltYXLoingHLo3gmAo9XaLM9DY1Sy8Q/exec', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customerName,
+            customerPhone,
+            customerAddress,
+            productName: product.name,
+            quantity,
+            total,
+            paymentMethod
+          })
+        });
+
+        if (res.ok) {
+          document.getElementById('order-success').style.display = 'block';
+          localStorage.removeItem('cart');
+          setTimeout(() => window.location.href = 'index.html', 2000);
+        } else {
+          alert('Error placing order. Please try again.');
+        }
+      } catch (err) {
+        alert('Could not connect to server. Please try again.');
+      }
     });
-    if (res.ok) {
-      // Save order locally for My Orders
-      const myOrders = JSON.parse(localStorage.getItem('myOrders')) || [];
-      myOrders.push({
-        productId: product.id || '',
-        name: product.name,
-        price: extractNumericPrice(product.price),
-        quantity,
-        customerName,
-        address: customerAddress,
-        date: new Date().toISOString()
-      });
-      localStorage.setItem('myOrders', JSON.stringify(myOrders));
-      document.getElementById('order-success').style.display = 'block';
-      setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 2000);
-    } else {
-      alert('Error placing order. Please try again.');
-    }
-  } catch (err) {
-    alert('Could not connect to server. Please try again.');
-  }
-});
-</script>
+  </script>
 </body>
 </html>
