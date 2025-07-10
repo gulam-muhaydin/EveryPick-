@@ -7,13 +7,29 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <script src="auth-guard.js"></script>
   <h2 style="text-align:center; margin: 30px 0 20px;">Place Your Order</h2>
   <form id="order-form" style="max-width: 400px; margin: 0 auto; background: #f8f8f8; padding: 24px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.04);">
     <label for="customerName">Name:</label><br>
     <input type="text" id="customerName" name="customerName" required style="width:100%;padding:8px;margin-bottom:12px;"><br>
-    <label for="items">Items (comma separated):</label><br>
-    <input type="text" id="items" name="items" required style="width:100%;padding:8px;margin-bottom:12px;">
-    <div id="product-readonly" style="display:none;padding:8px 0 12px 0;"></div>
+
+    <label for="customerPhone">Phone:</label><br>
+    <input type="text" id="customerPhone" name="customerPhone" required style="width:100%;padding:8px;margin-bottom:12px;"><br>
+
+    <label for="customerAddress">Address:</label><br>
+    <input type="text" id="customerAddress" name="customerAddress" required style="width:100%;padding:8px;margin-bottom:12px;"><br>
+
+    <label for="productName">Product Name:</label><br>
+    <input type="text" id="productName" name="productName" required style="width:100%;padding:8px;margin-bottom:12px;"><br>
+
+    <label for="quantity">Quantity:</label><br>
+    <input type="number" id="quantity" name="quantity" value="1" min="1" required style="width:100%;padding:8px;margin-bottom:12px;"><br>
+
+    <label for="paymentMethod">Payment Method:</label><br>
+    <select id="paymentMethod" name="paymentMethod" required style="width:100%;padding:8px;margin-bottom:12px;">
+      <option value="Cash on Delivery">Cash on Delivery</option>
+      <option value="H.K.ML Pay">H.K.ML Pay</option>
+    </select><br>
 
     <label for="total">Total Amount:</label><br>
     <input type="number" id="total" name="total" required style="width:100%;padding:8px;margin-bottom:12px;">

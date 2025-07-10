@@ -27,10 +27,10 @@ function renderOrders(orders) {
   for (const order of orders) {
     html += `<tr>
       <td>${order.id}</td>
-      <td>${order.customerName}</td>
-      <td>${order.customerPhone ? order.customerPhone : '<span style=\"color:#aaa;\">N/A</span>'}</td>
-      <td>${order.customerAddress ? order.customerAddress : '<span style=\"color:#aaa;\">N/A</span>'}</td>
-      <td>${order.items.join(', ')}</td>
+      <td>${order.name}</td>
+      <td>${order.phone ? order.phone : '<span style=\"color:#aaa;\">N/A</span>'}</td>
+      <td>${order.address ? order.address : '<span style=\"color:#aaa;\">N/A</span>'}</td>
+      <td>${order.productName ? order.productName : ''}${order.quantity ? ' x' + order.quantity : ''}</td>
       <td>Rs.${order.total}</td>
       <td id="status-${order.id}">${order.status}</td>
       <td>${order.createdAt ? new Date(order.createdAt).toLocaleString() : ''}</td>
@@ -92,7 +92,46 @@ window.updateStatus = async function(orderId, status) {
   document.getElementById(`status-${orderId}`).textContent = status;
 };
 
-(async function() {
-  const orders = await fetchOrders();
+async function fetchStats() {
+  const res = await fetch('http://localhost:3001/api/orders/stats');
+  return res.json();
+}
+
+function renderStats(stats) {
+  const container = document.getElementById('orders-stats');
+  if (!container) return;
+  container.innerHTML = `
+    <div style="display:flex;gap:30px;justify-content:center;margin-bottom:18px;">
+      <div style="background:#f6f7fa;padding:18px 32px;border-radius:10px;font-weight:600;box-shadow:0 2px 8px #0001;">
+        Today: <span style="color:#007bff;font-size:1.3em;">${stats.today}</span>
+      </div>
+      <div style="background:#f6f7fa;padding:18px 32px;border-radius:10px;font-weight:600;box-shadow:0 2px 8px #0001;">
+        This Week: <span style="color:#007bff;font-size:1.3em;">${stats.week}</span>
+      </div>
+      <div style="background:#f6f7fa;padding:18px 32px;border-radius:10px;font-weight:600;box-shadow:0 2px 8px #0001;">
+        This Month: <span style="color:#007bff;font-size:1.3em;">${stats.month}</span>
+      </div>
+    </div>
+  `;
+}
+
+async function loadAndRenderOrdersAndStats() {
+  const [orders, stats] = await Promise.all([
+    fetchOrders(),
+    fetchStats()
+  ]);
+  // Add a container for stats if not present
+  if (!document.getElementById('orders-stats')) {
+    const statsDiv = document.createElement('div');
+    statsDiv.id = 'orders-stats';
+    const container = document.getElementById('orders-container');
+    container.parentNode.insertBefore(statsDiv, container);
+  }
+  renderStats(stats);
   renderOrders(orders);
-})();
+}
+
+// Initial load
+loadAndRenderOrdersAndStats();
+// Poll every 5 seconds for updates
+setInterval(loadAndRenderOrdersAndStats, 5000);

@@ -116,6 +116,7 @@
   </style>
 </head>
 <body>
+  <script src="auth-guard.js"></script>
   <div class="buy-now-container">
     <div class="buy-now-header">Buy Now</div>
     <div class="product-summary">
@@ -163,21 +164,29 @@
     }
 
     function loadProductAndCalculate() {
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      const product = cart[cart.length - 1];
-      if (!product) {
-        document.querySelector('.buy-now-container').innerHTML =
-          '<div style="color:#e53935;text-align:center;font-weight:700;font-size:1.2rem;">No product selected for purchase.</div>';
-        return;
-      }
-      document.getElementById('product-img').src = product.img;
-      document.getElementById('product-name').textContent = product.name;
-      document.getElementById('product-price').textContent = product.price;
-      const quantity = parseInt(product.qty) || 1;
-      document.getElementById('product-qty').textContent = quantity;
-      const total = calculateTotalPKR(product.price, quantity);
-      document.getElementById('total-price').textContent = formatAsPKR(total);
-    }
+  // If just submitted, show success message only
+  if (sessionStorage.getItem('orderSubmitted') === 'true') {
+    document.querySelector('.buy-now-container').innerHTML =
+      '<div class="order-success" style="display:block; color:#28a745; font-weight:700; text-align:center; margin-top:18px; font-size:1.2rem;">Order placed successfully!</div>';
+    sessionStorage.removeItem('orderSubmitted');
+    setTimeout(() => window.location.href = 'index.html', 2000);
+    return;
+  }
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const product = cart[cart.length - 1];
+  if (!product) {
+    document.querySelector('.buy-now-container').innerHTML =
+      '<div style="color:#e53935;text-align:center;font-weight:700;font-size:1.2rem;">No product selected for purchase.</div>';
+    return;
+  }
+  document.getElementById('product-img').src = product.img;
+  document.getElementById('product-name').textContent = product.name;
+  document.getElementById('product-price').textContent = product.price;
+  const quantity = parseInt(product.qty) || 1;
+  document.getElementById('product-qty').textContent = quantity;
+  const total = calculateTotalPKR(product.price, quantity);
+  document.getElementById('total-price').textContent = formatAsPKR(total);
+}
 
     document.addEventListener('DOMContentLoaded', loadProductAndCalculate);
 
@@ -195,13 +204,13 @@
       const paymentMethod = document.getElementById('payment-method').value;
 
       try {
-        const res = await fetch('https://script.google.com/macros/s/AKfycbzHKKb28vQ-0Zu1oFnjgV-wAFMrfyKabQUVltYXLoingHLo3gmAo9XaLM9DY1Sy8Q/exec', {
+        const res = await fetch('http://localhost:3001/api/orders', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            customerName,
-            customerPhone,
-            customerAddress,
+            name: customerName,
+            phone: customerPhone,
+            address: customerAddress,
             productName: product.name,
             quantity,
             total,
@@ -212,7 +221,8 @@
         if (res.ok) {
           document.getElementById('order-success').style.display = 'block';
           localStorage.removeItem('cart');
-          setTimeout(() => window.location.href = 'index.html', 2000);
+          sessionStorage.setItem('orderSubmitted', 'true');
+          setTimeout(() => window.location.reload(), 500);
         } else {
           alert('Error placing order. Please try again.');
         }

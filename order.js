@@ -28,10 +28,26 @@ document.getElementById('order-form').addEventListener('submit', async function(
   successMsg.style.display = 'none';
   errorMsg.style.display = 'none';
   try {
+    // Collect all required fields from the form
+    const name = document.getElementById('customerName').value.trim();
+    const phone = document.getElementById('customerPhone').value.trim();
+    const address = document.getElementById('customerAddress').value.trim();
+    const productName = document.getElementById('productName').value.trim();
+    const quantity = parseInt(document.getElementById('quantity').value) || 1;
+    const paymentMethod = document.getElementById('paymentMethod').value;
+    // total is already collected
     const res = await fetch('http://localhost:3001/api/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ customerName, items, total })
+      body: JSON.stringify({
+        name,
+        phone,
+        address,
+        productName,
+        quantity,
+        total,
+        paymentMethod
+      })
     });
     if (!res.ok) {
       const data = await res.json();

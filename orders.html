@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-light: #e6f0ff;
+      --success: #28a745;
+      --success-light: #e6f9ed;
+      --danger: #e63946;
+      --danger-light: #ffebee;
+      --warning: #ffb703;
+      --warning-light: #fff8e6;
+      --dark: #212529;
+      --light: #f8f9fa;
+      --gray: #6c757d;
+      --border-radius: 12px;
+      --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f7fa;
+      color: var(--dark);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    h2 {
+      text-align: center;
+      margin: 30px 0;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--primary);
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+    
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+    
+    .filter-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .filter-label {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--dark);
+    }
+    
+    .category-select {
+      padding: 10px 20px;
+      border-radius: var(--border-radius);
+      border: 2px solid var(--primary-light);
+      font-size: 1rem;
+      font-weight: 500;
+      background-color: white;
+      color: var(--dark);
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--box-shadow);
+    }
+    
+    .category-select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    
+    .orders-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+    
+    .order-section {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    
+    .order-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    }
+    
+    .section-header {
+      padding: 18px 20px;
+      font-size: 1.3rem;
+      font-weight: 600;
+      text-align: center;
+      color: white;
+    }
+    
+    .pending .section-header {
+      background: var(--primary);
+    }
+    
+    .delivered .section-header {
+      background: var(--success);
+    }
+    
+    .cancelled .section-header {
+      background: var(--danger);
+    }
+    
+    .orders-container {
+      padding: 20px;
+    }
+    
+    .no-orders {
+      text-align: center;
+      padding: 20px;
+      color: var(--gray);
+      font-style: italic;
+    }
+    
+    .orders-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 0.95rem;
+    }
+    
+    .orders-table th {
+      background-color: var(--primary-light);
+      color: var(--primary);
+      padding: 12px 10px;
+      text-align: left;
+      font-weight: 600;
+    }
+    
+    .orders-table td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #eee;
+      vertical-align: middle;
+    }
+    
+    .orders-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .orders-table tr:hover {
+      background-color: var(--primary-light);
+    }
+    
+    .status {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-transform: capitalize;
+    }
+    
+    .status-pending {
+      background-color: var(--warning-light);
+      color: var(--warning);
+    }
+    
+    .status-delivered {
+      background-color: var(--success-light);
+      color: var(--success);
+    }
+    
+    .status-cancelled {
+      background-color: var(--danger-light);
+      color: var(--danger);
+    }
+    
+    .action-select {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      font-size: 0.9rem;
+      font-weight: 500;
+      background-color: white;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .action-select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+    }
+    
+    .timestamp {
+      font-size: 0.85rem;
+      color: var(--gray);
+    }
+    
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      border-radius: var(--border-radius);
+      color: white;
+      font-weight: 500;
+      box-shadow: var(--box-shadow);
+      z-index: 1000;
+      transform: translateX(200%);
+      transition: transform 0.3s ease;
+    }
+    
+    .notification.show {
+      transform: translateX(0);
+    }
+    
+    .notification.success {
+      background-color: var(--success);
+    }
+    
+    .notification.error {
+      background-color: var(--danger);
+    }
+    
+    @media (max-width: 768px) {
+      .orders-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .orders-table {
+        display: block;
+        overflow-x: auto;
+      }
+      
+      h2 {
+        font-size: 1.8rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .filter-container {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .category-select {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Order Management</h2>
+    
+    <div class="filter-container">
+      <span class="filter-label">Filter Orders:</span>
+      <select id="order-category-select" class="category-select">
+        <option value="pending">Pending Orders</option>
+        <option value="delivered">Delivered Orders</option>
+        <option value="cancelled">Cancelled Orders</option>
+      </select>
+    </div>
+    
+    <div class="orders-grid">
+      <div id="pending-orders-section" class="order-section pending">
+        <div class="section-header">Pending Orders</div>
+        <div class="orders-container">
+          <div id="pending-orders-list" class="no-orders">Loading pending orders...</div>
+        </div>
+      </div>
+      
+      <div id="delivered-orders-section" class="order-section delivered" style="display:none;">
+        <div class="section-header">Delivered Orders</div>
+        <div class="orders-container">
+          <div id="delivered-orders-list" class="no-orders">No delivered orders yet.</div>
+        </div>
+      </div>
+      
+      <div id="cancelled-orders-section" class="order-section cancelled" style="display:none;">
+        <div class="section-header">Cancelled Orders</div>
+        <div class="orders-container">
+          <div id="cancelled-orders-list" class="no-orders">No cancelled orders yet.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="notification" class="notification"></div>
+
+  <script>
+    // Global variable to store all orders
+    let allOrders = [];
+    
+    async function fetchOrders() {
+      try {
+        const res = await fetch('http://localhost:3001/api/orders');
+        if (!res.ok) throw new Error('Failed to fetch orders');
+        const data = await res.json();
+        allOrders = data; // Store all orders globally
+        return data;
+      } catch (err) {
+        console.error('Error fetching orders:', err);
+        showNotification('Error fetching orders. Please try again.', 'error');
+        return [];
+      }
+    }
+
+    function renderOrdersTable(orders) {
+      if (!orders.length) {
+        return '<div class="no-orders">No orders found in this category.</div>';
+      }
+      
+      let html = `<table class="orders-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>`;
+        
+      for (const order of orders) {
+        const statusClass = `status-${order.status}`;
+        const formattedDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A';
+        const formattedTime = order.createdAt ? new Date(order.createdAt).toLocaleTimeString() : '';
+        
+        html += `<tr id="order-row-${order.id}">
+          <td>#${order.id}</td>
+          <td>
+            <strong>${order.name}</strong><br>
+            <small>${order.phone || 'N/A'}</small>
+          </td>
+          <td>${order.productName || ''}</td>
+          <td>${order.quantity || ''}</td>
+          <td>Rs. ${order.total?.toLocaleString() || '0'}</td>
+          <td><span class="status ${statusClass}">${order.status}</span></td>
+          <td>
+            <div class="timestamp">${formattedDate}</div>
+            <div class="timestamp">${formattedTime}</div>
+          </td>
+          <td>
+            <select class="action-select" onchange="updateOrderStatus(${order.id}, this.value)">
+              <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+              <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
+              <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancel</option>
+            </select>
+          </td>
+        </tr>`;
+      }
+      
+      html += '</tbody></table>';
+      return html;
+    }
+
+    function showCategorySection(category) {
+      document.getElementById('pending-orders-section').style.display = category === 'pending' ? 'block' : 'none';
+      document.getElementById('delivered-orders-section').style.display = category === 'delivered' ? 'block' : 'none';
+      document.getElementById('cancelled-orders-section').style.display = category === 'cancelled' ? 'block' : 'none';
+      
+      // Update the select value to match the shown section
+      document.getElementById('order-category-select').value = category;
+    }
+
+    function showNotification(message, type = 'success') {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.className = `notification ${type} show`;
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+
+    async function updateOrderStatus(orderId, newStatus) {
+      try {
+        // Find the order in our global allOrders array
+        const orderIndex = allOrders.findIndex(o => o.id === orderId);
+        if (orderIndex === -1) {
+          throw new Error('Order not found');
+        }
+        
+        // Update the order status locally first for immediate UI feedback
+        allOrders[orderIndex].status = newStatus;
+        
+        // Update the UI immediately
+        const pending = allOrders.filter(o => o.status === 'pending');
+        const delivered = allOrders.filter(o => o.status === 'delivered');
+        const cancelled = allOrders.filter(o => o.status === 'cancelled');
+        
+        document.getElementById('pending-orders-list').innerHTML = renderOrdersTable(pending);
+        document.getElementById('delivered-orders-list').innerHTML = renderOrdersTable(delivered);
+        document.getElementById('cancelled-orders-list').innerHTML = renderOrdersTable(cancelled);
+        
+        // Send the update to the server
+        const response = await fetch(`http://localhost:3001/api/orders/${orderId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ status: newStatus })
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to update order status');
+        }
+        
+        showNotification(`Order #${orderId} status updated to ${newStatus}`);
+      } catch (error) {
+        console.error('Error updating order status:', error);
+        showNotification('Failed to update order status. Please try again.', 'error');
+        // Reload orders to reset any local changes that might have failed
+        loadOrders();
+      }
+    }
+
+    document.getElementById('order-category-select').addEventListener('change', function() {
+      showCategorySection(this.value);
+    });
+
+    async function loadOrders() {
+      try {
+        await fetchOrders();
+        const pending = allOrders.filter(o => o.status === 'pending');
+        const delivered = allOrders.filter(o => o.status === 'delivered');
+        const cancelled = allOrders.filter(o => o.status === 'cancelled');
+        
+        document.getElementById('pending-orders-list').innerHTML = renderOrdersTable(pending);
+        document.getElementById('delivered-orders-list').innerHTML = renderOrdersTable(delivered);
+        document.getElementById('cancelled-orders-list').innerHTML = renderOrdersTable(cancelled);
+      } catch (error) {
+        console.error('Error loading orders:', error);
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      showCategorySection('pending');
+      loadOrders();
+      setInterval(loadOrders, 10000); // Refresh every 10 seconds
+    });
+  </script>
+</body>
+</html>
