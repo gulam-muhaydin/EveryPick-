@@ -1,0 +1,11 @@
+[build]
+  publish = "."
+  command = ""
+
+[dev]
+  port = 3001
+
+[[redirects]]
+  from = "/api/*"
+  to = "http://localhost:3001/api/:splat"
+  status = 200
